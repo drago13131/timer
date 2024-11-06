@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer Debat Sederhana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .timer-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .timer-display {
+            font-size: 48px;
+            margin: 10px 0;
+        }
+        .controls input {
+            width: 50px;
+            text-align: center;
+        }
+        .controls button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Timer Debat Sederhana</h1>
+    
+    <div class="timer-container">
+        <h2>Timer</h2>
+        <div class="timer-display" id="timer-display">00:00</div>
+        <div class="controls">
+            <input type="number" id="input-minutes" placeholder="Menit" min="0"> :
+            <input type="number" id="input-seconds" placeholder="Detik" min="0" max="59">
+            <button onclick="startTimer()">Mulai</button>
+            <button onclick="pauseTimer()">Pause</button>
+            <button onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let timerInterval = null;
+        let totalSeconds = 0;
+
+        function startTimer() {
+            // Get input values and convert to seconds
+            const minutes = parseInt(document.getElementById("input-minutes").value) || 0;
+            const seconds = parseInt(document.getElementById("input-seconds").value) || 0;
+            totalSeconds = minutes * 60 + seconds;
+
+            // Prevent starting the timer if time is 0
+            if (totalSeconds <= 0) return;
+
+            // Clear any existing timer and start a new one
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (totalSeconds > 0) {
+                    totalSeconds--;
+                    document.getElementById("timer-display").textContent = formatTime(totalSeconds);
+                } else {
+                    clearInterval(timerInterval);
+                    playEndSound();
+                    document.getElementById("timer-display").textContent = "00:00";
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            totalSeconds = 0;
+            document.getElementById("timer-display").textContent = "00:00";
+        }
+
+        function formatTime(seconds) {
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function playEndSound() {
+            const endSound = new Audio("end-sound.mp3");  // Replace with your actual mp3 file path
+            endSound.play();
+        }
+    </script>
+</body>
+
+</html>
